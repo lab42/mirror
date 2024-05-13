@@ -1,0 +1,6 @@
+logLevel: info
+environment: stg
+kubeconfig:
+  # Set to true to use in cluster configuration
+  inCluster: false
+  path: "/Users/dany.henriquez/.kube/config"
