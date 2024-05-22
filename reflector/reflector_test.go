@@ -11,7 +11,6 @@ import (
 	"k8s.io/apimachinery/pkg/watch"
 
 	"github.com/lab42/mirror/reflector"
-	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/fake"
 )
 
@@ -54,7 +53,7 @@ func (m *MockResource) Watch(ctx context.Context, opts metav1.ListOptions) (watc
 func TestReflector_Run(t *testing.T) {
 	clientset := fake.NewSimpleClientset()
 	mockResource := new(MockResource)
-	reflector := reflector.NewReflector(reflector.ReflectorConfig{ClientSet: kubernetes.NewForConfigOrDie(clientset), Resource: mockResource, ResourceType: reflector.ConfigMap})
+	reflector := reflector.NewReflector(reflector.ReflectorConfig{ClientSet: clientset, Resource: mockResource, ResourceType: reflector.ConfigMap})
 
 	ctx := context.Background()
 
