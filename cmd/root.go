@@ -23,8 +23,11 @@ var rootCmd = &cobra.Command{
 	Use:   "reflect",
 	Short: "Secrets and config reflector for kubernetes.",
 	Run: func(cmd *cobra.Command, args []string) {
+		// Create clientset
 		clientset, err := kubernetes.NewClientSet()
-		cobra.CheckErr(err)
+		if err != nil {
+			log.Fatal().Err(err).Msg("")
+		}
 
 		// Create resources
 		cmResource := &resource.ConfigMapResource{Clientset: clientset}
@@ -47,7 +50,7 @@ var rootCmd = &cobra.Command{
 		secretReflector := reflector.NewReflector(secretReflectorConfig)
 
 		// Create a context with cancel function
-		ctx, cancel := context.WithCancel(context.Background())
+		ctx, cancel := context.WithCancel(cmd.Context())
 		defer cancel()
 
 		var wg sync.WaitGroup
@@ -75,13 +78,13 @@ var rootCmd = &cobra.Command{
 		go func() {
 			sig := <-sigChan
 			log.Info().Str("signal", sig.String()).Msg("received signal")
-			log.Info().Msg("initiating graceful shutdown")
+			log.Info().Msg("initiating shutdown")
 			cancel() // Cancel the context to stop the reflectors
 		}()
 
 		// Wait for the reflectors to finish
 		wg.Wait()
-		log.Info().Msg("reflectors stopped")
+		log.Info().Msg("reflectors exited")
 	},
 }
 
