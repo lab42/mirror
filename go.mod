@@ -8,7 +8,7 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.9.0
-	k8s.io/client-go v0.30.0
+	k8s.io/client-go v0.30.1
 )
 
 require (
