@@ -18,7 +18,9 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "reflect",
 	Short: "Secrets and config reflector for kubernetes.",
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Run: func(cmd *cobra.Command, args []string) {
+
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -61,18 +63,17 @@ func initConfig() {
 	}
 
 	viper.SetDefault("logLevel", "debug")
-
 	viper.AutomaticEnv() // read in environment variables that match
 
 	if err := viper.ReadInConfig(); err == nil {
-		log.Info().Str("path", viper.ConfigFileUsed()).Msg("configuration loaded")
+		log.Info().Str("path", viper.ConfigFileUsed()).Str("type", "configuration").Msg("configuration loaded")
 	}
 
 	viper.WatchConfig()
 	viper.OnConfigChange(func(in fsnotify.Event) {
-		log.Warn().Str("path", viper.ConfigFileUsed()).Msg("configuration changed")
+		log.Info().Str("path", viper.ConfigFileUsed()).Str("type", "configuration").Msg("configuration changed")
 		if err := viper.ReadInConfig(); err == nil {
-			log.Info().Str("path", viper.ConfigFileUsed()).Msg("configuration reloaded")
+			log.Info().Str("path", viper.ConfigFileUsed()).Str("type", "configuration").Msg("configuration reloaded")
 		}
 	})
 }

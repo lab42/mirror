@@ -3,7 +3,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "github.com/lab42/reflect/cmd"
+import "github.com/lab42/mirror/cmd"
 
 func main() {
 	cmd.Execute()

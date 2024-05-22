@@ -1,5 +1,4 @@
 logLevel: info
-environment: stg
 kubeconfig:
   # Set to true to use in cluster configuration
   inCluster: false
