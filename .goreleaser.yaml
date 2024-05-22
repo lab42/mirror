@@ -1,0 +1,91 @@
+project_name: mirror
+builds:
+- hooks:
+    post:
+    - upx "{{ .Path }}"
+  env:
+  - CGO_ENABLED=0
+  goos:
+  - linux
+  goarch:
+  - amd64
+  - arm
+  - arm64
+  goarm:
+  - "6"
+  - "7"
+  ldflags:
+  - -extldflags "-static"
+  - -s
+  - -w
+  - -X github.com/lab42/{{ .ProjectName }}/cmd.Version={{ .Version }}
+  - -X github.com/lab42/{{ .ProjectName }}/cmd.Commit={{ .FullCommit }}
+  - -X github.com/lab42/{{ .ProjectName }}/cmd.Date={{ .Date }}
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+dockers:
+- use: buildx
+  goos: linux
+  goarch: amd64
+  image_templates:
+  - ghcr.io/lab42/{{.ProjectName}}:v{{.Version}}-amd64
+  - ghcr.io/lab42/{{.ProjectName}}:latest-amd64
+  build_flag_templates:
+  - "--platform=linux/amd64"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source=https://github.com/lab42/{{.ProjectName}}"
+- use: buildx
+  goos: linux
+  goarch: arm
+  goarm: 6
+  image_templates:
+  - ghcr.io/lab42/{{.ProjectName}}:v{{.Version}}-armv6
+  - ghcr.io/lab42/{{.ProjectName}}:latest-armv6
+  build_flag_templates:
+  - "--platform=linux/arm/v6"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source=https://github.com/lab42/{{.ProjectName}}"
+- use: buildx
+  goos: linux
+  goarch: arm
+  goarm: 7
+  image_templates:
+  - ghcr.io/lab42/{{.ProjectName}}:v{{.Version}}-armv7
+  - ghcr.io/lab42/{{.ProjectName}}:latest-armv7
+  build_flag_templates:
+  - "--platform=linux/arm/v7"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source=https://github.com/lab42/{{.ProjectName}}"
+- use: buildx
+  goos: linux
+  goarch: arm64
+  image_templates:
+  - ghcr.io/lab42/{{.ProjectName}}:v{{.Version}}-arm64v8
+  - ghcr.io/lab42/{{.ProjectName}}:latest-arm64v8
+  build_flag_templates:
+  - "--platform=linux/arm64/v8"
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source=https://github.com/lab42/{{.ProjectName}}"
+docker_manifests:
+- name_template: ghcr.io/lab42/{{.ProjectName}}:v{{ .Version }}
+  image_templates:
+  - ghcr.io/lab42/{{.ProjectName}}:v{{ .Version }}-amd64
+  - ghcr.io/lab42/{{.ProjectName}}:v{{ .Version }}-arm64v8
+  - ghcr.io/lab42/{{.ProjectName}}:v{{ .Version }}-armv6
+  - ghcr.io/lab42/{{.ProjectName}}:v{{ .Version }}-armv7
+- name_template: ghcr.io/lab42/{{.ProjectName}}:latest
+  image_templates:
+  - ghcr.io/lab42/{{.ProjectName}}:latest-amd64
+  - ghcr.io/lab42/{{.ProjectName}}:latest-arm64v8
+  - ghcr.io/lab42/{{.ProjectName}}:latest-armv6
+  - ghcr.io/lab42/{{.ProjectName}}:latest-armv7
