@@ -4,9 +4,14 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"context"
 	"os"
+	"sync"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/lab42/mirror/kubernetes"
+	"github.com/lab42/mirror/reflector"
+	"github.com/lab42/mirror/resource"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -19,7 +24,57 @@ var rootCmd = &cobra.Command{
 	Use:   "reflect",
 	Short: "Secrets and config reflector for kubernetes.",
 	Run: func(cmd *cobra.Command, args []string) {
+		clientset, err := kubernetes.NewClientSet()
+		cobra.CheckErr(err)
 
+		// Create resources
+		cmResource := &resource.ConfigMapResource{Clientset: clientset}
+		secretResource := &resource.SecretResource{Clientset: clientset}
+
+		// Create a Reflector for ConfigMaps
+		cmReflectorConfig := reflector.ReflectorConfig{
+			ClientSet:    clientset,
+			Resource:     cmResource,
+			ResourceType: reflector.ConfigMap,
+		}
+		cmReflector := reflector.NewReflector(cmReflectorConfig)
+
+		// Create a Reflector for Secrets
+		secretReflectorConfig := reflector.ReflectorConfig{
+			ClientSet:    clientset,
+			Resource:     secretResource,
+			ResourceType: reflector.Secret,
+		}
+		secretReflector := reflector.NewReflector(secretReflectorConfig)
+
+		// Run the reflectors
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
+		var wg sync.WaitGroup
+		wg.Add(2)
+
+		go func() {
+			log.Info().Str("type", "configMap").Msg("starting reflector")
+			defer wg.Done()
+			if err := cmReflector.Run(ctx); err != nil {
+				log.Fatal().Err(err).Str("type", "configMap").Msg("error running reflector")
+				cancel() // Cancel the context to stop the other reflector
+			}
+		}()
+
+		go func() {
+			log.Info().Str("type", "secret").Msg("starting reflector")
+			defer wg.Done()
+			if err := secretReflector.Run(ctx); err != nil {
+				log.Fatal().Err(err).Str("type", "secret").Msg("error running reflector")
+				cancel() // Cancel the context to stop the other reflector
+			}
+		}()
+
+		// Wait for the reflectors to finish
+		wg.Wait()
+		log.Info().Msg("reflectors stopped running")
 	},
 }
 

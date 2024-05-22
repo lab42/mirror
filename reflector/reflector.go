@@ -33,14 +33,14 @@ type Resource interface {
 
 // ReflectorConfig holds configuration options for creating a Reflector.
 type ReflectorConfig struct {
-	ClientSet    *kubernetes.Clientset
+	ClientSet    kubernetes.Interface
 	Resource     Resource
 	ResourceType ResourceType
 }
 
 // Reflector is responsible for reflecting resources across namespaces.
 type Reflector struct {
-	ClientSet *kubernetes.Clientset
+	ClientSet kubernetes.Interface
 	Resource  Resource
 	Type      ResourceType
 }
@@ -127,6 +127,7 @@ func (r *Reflector) reflectResource(ctx context.Context, resource metav1.Object)
 // prepareReflectedResource prepares a deep copy of the resource for reflection.
 func (r *Reflector) prepareReflectedResource(resource metav1.Object, namespace string) (metav1.Object, error) {
 	var reflectedResource metav1.Object
+
 	switch r.Type {
 	case ConfigMap:
 		cm, ok := resource.(*corev1.ConfigMap)
@@ -143,6 +144,9 @@ func (r *Reflector) prepareReflectedResource(resource metav1.Object, namespace s
 	default:
 		return nil, errors.New("unknown resource type")
 	}
+
+	reflectedResource.SetResourceVersion("") // Clear the resource version
+	reflectedResource.SetUID("")             // Clear the UID to prevent conflicts
 	reflectedResource.SetNamespace(namespace)
 	deleteAnnotations(reflectedResource)
 	return reflectedResource, nil
