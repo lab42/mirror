@@ -1,12 +1,11 @@
-/*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"context"
 	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/lab42/mirror/kubernetes"
@@ -47,34 +46,42 @@ var rootCmd = &cobra.Command{
 		}
 		secretReflector := reflector.NewReflector(secretReflectorConfig)
 
-		// Run the reflectors
+		// Create a context with cancel function
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
 		var wg sync.WaitGroup
 		wg.Add(2)
 
-		go func() {
-			log.Info().Str("type", "configMap").Msg("starting reflector")
+		// Function to run reflector and handle errors
+		runReflector := func(r *reflector.Reflector, resourceType string) {
 			defer wg.Done()
-			if err := cmReflector.Run(ctx); err != nil {
-				log.Fatal().Err(err).Str("type", "configMap").Msg("error running reflector")
+			log.Info().Str("type", resourceType).Msg("starting reflector")
+			if err := r.Run(ctx); err != nil {
+				log.Fatal().Err(err).Str("type", resourceType).Msg("error running reflector")
 				cancel() // Cancel the context to stop the other reflector
 			}
-		}()
+		}
 
+		// Run the reflectors in separate goroutines
+		go runReflector(cmReflector, "configMap")
+		go runReflector(secretReflector, "secret")
+
+		// Setup signal handling to gracefully shutdown on SIGINT or SIGTERM
+		sigChan := make(chan os.Signal, 1)
+		signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+		// Wait for a termination signal
 		go func() {
-			log.Info().Str("type", "secret").Msg("starting reflector")
-			defer wg.Done()
-			if err := secretReflector.Run(ctx); err != nil {
-				log.Fatal().Err(err).Str("type", "secret").Msg("error running reflector")
-				cancel() // Cancel the context to stop the other reflector
-			}
+			sig := <-sigChan
+			log.Info().Str("signal", sig.String()).Msg("received signal")
+			log.Info().Msg("initiating graceful shutdown")
+			cancel() // Cancel the context to stop the reflectors
 		}()
 
 		// Wait for the reflectors to finish
 		wg.Wait()
-		log.Info().Msg("reflectors stopped running")
+		log.Info().Msg("reflectors stopped")
 	},
 }
 
