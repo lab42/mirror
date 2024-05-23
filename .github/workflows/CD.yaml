@@ -33,9 +33,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           git fetch --tags --force
-          if [ $(svu current) != $(svu next) ]; then
-              gh release create $(svu next)
-          fi
+          gh release create $(svu next)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
