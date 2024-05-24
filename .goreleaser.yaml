@@ -2,7 +2,7 @@ project_name: mirror
 builds:
 - hooks:
     post:
-    - upx "{{ .Path }}"
+    - upx -9 --best "{{ .Path }}"
   env:
   - CGO_ENABLED=0
   goos:
