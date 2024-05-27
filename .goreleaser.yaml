@@ -5,6 +5,7 @@ builds:
     - upx -9 "{{ .Path }}"
   env:
   - CGO_ENABLED=0
+  - GOFLAGS=-mod=vendor
   goos:
   - linux
   goarch:
@@ -14,7 +15,6 @@ builds:
   goarm:
   - "6"
   - "7"
-  go_build_args: ["-mod=vendor"]
   ldflags:
   - -extldflags "-static"
   - -s
