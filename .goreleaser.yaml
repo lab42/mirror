@@ -14,8 +14,7 @@ builds:
   goarm:
   - "6"
   - "7"
-  flags:
-  - -mod vendor
+  go_build_args: ["-mod=vendor"]
   ldflags:
   - -extldflags "-static"
   - -s
