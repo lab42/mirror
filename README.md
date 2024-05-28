@@ -1,7 +1,8 @@
+# Mirror
+
+![GitHub Release](https://img.shields.io/github/v/release/lab42/mirror)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/lab42/mirror/CD.yaml)
 ![Codecov (with branch)](https://img.shields.io/codecov/c/github/lab42/mirror/main)
-
-# Mirror
 
 Mirror is a tool for reflecting Kubernetes resources such as Secrets and ConfigMaps across namespaces.
 
