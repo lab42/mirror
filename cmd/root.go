@@ -128,6 +128,16 @@ func initConfig() {
 	}
 
 	viper.SetDefault("logLevel", "debug")
+
+	viper.SetDefault("reflect.configMap.enabled", true)
+	viper.SetDefault("reflect.configMap.annotation", "reflect.lab42.io/namespaces")
+
+	viper.SetDefault("reflect.secret.enabled", true)
+	viper.SetDefault("reflect.secret.annotation", "reflect.lab42.io/namespaces")
+
+	viper.SetDefault("kubeconfig.inCluster", true)
+	viper.SetDefault("kubeconfig.path", "")
+
 	viper.AutomaticEnv() // read in environment variables that match
 
 	if err := viper.ReadInConfig(); err == nil {

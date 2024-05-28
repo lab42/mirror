@@ -1,0 +1,17 @@
+reflect:
+  secret:
+    # Set to false to disable reflection 
+    enabled: true
+    # Annotation to check and reflect
+    annotation: reflect.lab42.io/namespaces
+  configMap: 
+    # Set to false to disable reflection
+    enabled: true
+    # Annotation to check and reflect
+    annotation: reflect.lab42.io/namespaces
+# Log levek
+logLevel: info
+kubeconfig:
+  # Set to true to use in cluster configuration
+  inCluster: true
+  path: ""
