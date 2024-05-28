@@ -26,9 +26,15 @@ jobs:
       run: go mod tidy
 
     - name: "[Golang] Go test"
-      run: go test -race -covermode=atomic -coverprofile=coverage.out ./...
+      run: |
+        go test -race -covermode=atomic -coverprofile=reflector.out ./reflector
+        go test -race -covermode=atomic -coverprofile=config.out ./config
+        go test -race -covermode=atomic -coverprofile=resource.out ./resource
     
     - name: "[Codecov] Upload coverage"
       uses: codecov/codecov-action@v4
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      with:
+        files: reflector.out,config.out,resource.out
+        flags: unittests # optional
+        token: ${{ secrets.CODECOV_TOKEN }} # required
+        verbose: true # optional (default = false)
