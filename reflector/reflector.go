@@ -6,6 +6,7 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/spf13/viper"
 	corev1 "k8s.io/api/core/v1"
 	k8sErrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -87,8 +88,12 @@ func (r *Reflector) Run(ctx context.Context) error {
 
 // reflectResource reflects the given resource across namespaces.
 func (r *Reflector) reflectResource(ctx context.Context, resource metav1.Object) error {
+	if !r.isEnabled() {
+		return nil
+	}
+
 	annotations := resource.GetAnnotations()
-	val, ok := annotations["reflect.lab42.io/to-namespaces"]
+	val, ok := annotations[r.getReflectAnnotation()]
 	if !ok || len(val) == 0 {
 		return nil // No reflection needed
 	}
@@ -127,7 +132,6 @@ func (r *Reflector) reflectResource(ctx context.Context, resource metav1.Object)
 // prepareReflectedResource prepares a deep copy of the resource for reflection.
 func (r *Reflector) prepareReflectedResource(resource metav1.Object, namespace string) (metav1.Object, error) {
 	var reflectedResource metav1.Object
-
 	switch r.Type {
 	case ConfigMap:
 		cm, ok := resource.(*corev1.ConfigMap)
@@ -148,14 +152,18 @@ func (r *Reflector) prepareReflectedResource(resource metav1.Object, namespace s
 	reflectedResource.SetResourceVersion("") // Clear the resource version
 	reflectedResource.SetUID("")             // Clear the UID to prevent conflicts
 	reflectedResource.SetNamespace(namespace)
-	deleteAnnotations(reflectedResource)
+	r.deleteAnnotations(reflectedResource)
 	return reflectedResource, nil
 }
 
 // deleteReflectedResources deletes the reflected resources from the specified namespaces.
 func (r *Reflector) deleteReflectedResources(ctx context.Context, resource metav1.Object) error {
+	if !r.isEnabled() {
+		return nil
+	}
+
 	annotations := resource.GetAnnotations()
-	val, ok := annotations["reflect.lab42.io/to-namespaces"]
+	val, ok := annotations[r.getReflectAnnotation()]
 	if !ok || len(val) == 0 {
 		return nil // No reflection needed
 	}
@@ -170,8 +178,32 @@ func (r *Reflector) deleteReflectedResources(ctx context.Context, resource metav
 }
 
 // deleteAnnotations deletes the reflection-related annotations from the resource.
-func deleteAnnotations(resource metav1.Object) {
+func (r *Reflector) deleteAnnotations(resource metav1.Object) {
 	annotations := resource.GetAnnotations()
-	delete(annotations, "reflect.lab42.io/to-namespaces")
+	delete(annotations, r.getReflectAnnotation())
 	resource.SetAnnotations(annotations)
+}
+
+// getAnnotation returns the reflection annotation string based on the resource type.
+func (r *Reflector) getReflectAnnotation() string {
+	switch r.Type {
+	case ConfigMap:
+		return viper.GetString("reflect.configMap.annotation")
+	case Secret:
+		return viper.GetString("reflect.secret.annotation")
+	default:
+		return ""
+	}
+}
+
+// isEnabled returns if reflection is enabled based on the resource type.
+func (r *Reflector) isEnabled() bool {
+	switch r.Type {
+	case ConfigMap:
+		return viper.GetBool("reflect.configMap.enabled")
+	case Secret:
+		return viper.GetBool("reflect.secret.enabled")
+	default:
+		return false
+	}
 }
