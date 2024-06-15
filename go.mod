@@ -5,7 +5,7 @@ go 1.22.2
 require (
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/rs/zerolog v1.33.0
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
 	k8s.io/client-go v0.30.2
