@@ -18,9 +18,9 @@ The security landscape in containerized environments need a minimalist approach.
 
 Incorporating Mirror into your Kubernetes setup brings a couple of benefits:
 
-Enhanced Security: With a scratch container, you eliminate unnecessary components, reducing potential security risks.
-High Performance: Golang's efficient concurrency model ensures that the reflector can handle high loads and scale seamlessly with your Kubernetes environment.
-Reliability: Statically compiled binaries mean fewer dependencies and a lower chance of runtime failures, ensuring your configuration and secrets management is always up and running.
+- Enhanced Security: With a scratch container, you eliminate unnecessary components, reducing potential security risks.
+- High Performance: Golang's efficient concurrency model ensures that the reflector can handle high loads and scale seamlessly with your Kubernetes environment.
+- Reliability: Statically compiled binaries mean fewer dependencies and a lower chance of runtime failures, ensuring your configuration and secrets management is always up and running.
 
 ## Usage
 
