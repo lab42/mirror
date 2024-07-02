@@ -65,6 +65,7 @@ Mirror can also be configured using environment variables. Here are the environm
 - `MIRROR_REFLECT_SECRET_ENABLED`: Sets whether reflection for Secrets is enabled (e.g., `"true"`, `"false"`)
 - `MIRROR_REFLECT_SECRET_ANNOTATION`: Sets the annotation used for Secret reflection
 - `MIRROR_KUBECONFIG_INCLUSTER`: Sets whether to use in-cluster Kubernetes configuration
+- `MIRROR_KUBECONFIG_PATH`: Sets the path to the Kubernetes configuration file (for out of cluster development)
 
 Environment variables should be prefixed with `MIRROR_`. For example, to set the log level to `"debug"`, you would use `MIRROR_LOGLEVEL=debug`.
 
