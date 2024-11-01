@@ -71,7 +71,7 @@ jobs:
         run: curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 
       - name: "[Setup] Cosign" 
-        uses: sigstore/cosign-installer@v3.4.0
+        uses: sigstore/cosign-installer@v3.7.0
       
       - name: "[Setup] Cosign key"
         env:
