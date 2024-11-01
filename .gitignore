@@ -1,0 +1,24 @@
+# Go binaries
+/dist/
+
+# Go test binary, build cache, and coverage file
+*.test
+*.out
+*.cover
+
+# Dependency directories
+/vendor/
+/Gopkg.lock
+
+# IDE/editor specific files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+dist/
+cosign.key
