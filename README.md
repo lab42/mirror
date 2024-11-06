@@ -1,8 +1,16 @@
-# Mirror
+![Mirror](assets/banner.svg)
 
-![GitHub Release](https://img.shields.io/github/v/release/lab42/mirror)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/lab42/mirror/CD.yaml)
-![Codecov (with branch)](https://img.shields.io/codecov/c/github/lab42/mirror/main)
+<p align="center">
+  <img src="https://img.shields.io/github/v/tag/lab42/mirror?label=latest%20tag&style=flat-square" alt="Latest Tag" height="30" />
+  <img src="https://img.shields.io/github/actions/workflow/status/lab42/mirror/tag.yaml?style=flat-square" alt="Build Status" height="30" />
+  <img src="https://img.shields.io/github/go-mod/go-version/lab42/mirror?style=flat-square" alt="Go Version" height="30" />
+  <img src="https://img.shields.io/github/license/lab42/mirror?style=flat-square" alt="License" height="30" />
+  <a href="https://goreportcard.com/report/github.com/lab42/mirror">
+    <img src="https://goreportcard.com/badge/github.com/lab42/mirror?style=flat-square" alt="Go Report Card" height="30" />
+  </a>
+</p>
+
+<br/>
 
 Mirror is a tool for reflecting Kubernetes resources such as Secrets and ConfigMaps across namespaces.
 
