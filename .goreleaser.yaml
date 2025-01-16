@@ -6,7 +6,6 @@ builds:
         - upx -9 "{{ .Path }}"
     env:
       - CGO_ENABLED=0
-      - GOFLAGS=-mod=vendor
     goos:
       - linux
     goarch:
