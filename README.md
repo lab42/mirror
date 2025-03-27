@@ -2,7 +2,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/github/v/tag/lab42/mirror?label=latest%20tag&style=flat-square" alt="Latest Tag" height="30" />
-  <img src="https://img.shields.io/github/actions/workflow/status/lab42/mirror/tag.yaml?style=flat-square" alt="Build Status" height="30" />
+  <img src="https://img.shields.io/github/actions/workflow/status/lab42/mirror/CD.yaml?style=flat-square" alt="Build Status" height="30" />
   <img src="https://img.shields.io/github/go-mod/go-version/lab42/mirror?style=flat-square" alt="Go Version" height="30" />
   <img src="https://img.shields.io/github/license/lab42/mirror?style=flat-square" alt="License" height="30" />
   <a href="https://goreportcard.com/report/github.com/lab42/mirror">
