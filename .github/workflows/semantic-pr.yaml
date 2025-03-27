@@ -1,26 +1,13 @@
-name: "Semantic PR"
-
+name: Validate PR Title
 on:
-  pull_request_target:
-    types:
-    - opened
-    - edited
-    - synchronize
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
 
 jobs:
-  main:
-    name: PR
+  validate:
     runs-on: ubuntu-latest
     steps:
-    - name: "[Validate] Title"
-      uses: amannn/action-semantic-pull-request@v5
-      with:
-        requireScope: false
-        types: |
-          fix
-          feat
-          fix!
-          feat!
-          chore
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      - name: Validate PR Title
+        uses: lab42/ccu-action@main
+        with:
+          pr_title: ${{ github.event.pull_request.title }}
