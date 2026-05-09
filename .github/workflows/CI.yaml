@@ -32,7 +32,7 @@ jobs:
         go test -race -covermode=atomic -coverprofile=resource.out ./resource
     
     - name: "[Codecov] Upload coverage"
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v6
       with:
         files: reflector.out,config.out,resource.out
         flags: unittests # optional
