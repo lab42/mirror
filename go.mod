@@ -2,7 +2,7 @@ module github.com/lab42/mirror
 
 go 1.26.0
 
-toolchain go1.26.4
+toolchain go1.26.5
 
 require (
 	github.com/fsnotify/fsnotify v1.10.1
